@@ -25,9 +25,9 @@
 int guac_terminal_xparsecolor(const char* spec,
         guac_terminal_color* color) {
 
-    int red;
-    int green;
-    int blue;
+    unsigned int red;
+    unsigned int green;
+    unsigned int blue;
 
     /* 12-bit RGB ("rgb:h/h/h"), zero-padded to 24-bit */
     if (sscanf(spec, "rgb:%1x/%1x/%1x", &red, &green, &blue) == 3) {

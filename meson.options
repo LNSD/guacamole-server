@@ -1,0 +1,104 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+# Core library dependencies
+option(
+  'ssl', type: 'feature', value: 'enabled',
+  description: 'Enable SSL/TLS encryption support'
+)
+option(
+  'webp', type: 'feature', value: 'disabled',
+  description: 'Enable WebP image encoding support'
+)
+option(
+  'pulse', type: 'feature', value: 'enabled',
+  description: 'Enable PulseAudio support'
+)
+
+
+# Protocol support
+option(
+    'ssh', type: 'feature', value: 'enabled',
+    description: 'Enable SSH protocol support (requires libssh2)'
+)
+option(
+    'telnet', type: 'feature', value: 'enabled',
+    description: 'Enable Telnet protocol support (requires libtelnet)'
+)
+option(
+  'vnc', type: 'feature', value: 'enabled',
+  description: 'Enable VNC protocol support'
+)
+option(
+  'rdp', type: 'feature', value: 'disabled',
+  description: 'Enable RDP protocol support (requires FreeRDP)'
+)
+option(
+  'kubernetes', type: 'feature', value: 'disabled',
+  description: 'Enable Kubernetes protocol support for attaching to pods'
+)
+
+# RDP-specific options
+option(
+  'freerdp_plugin_dir', type: 'string',
+  description: 'Directory where FreeRDP plugins will be installed'
+)
+option(
+  'allow_freerdp_snapshots', type: 'feature', value: 'disabled',
+  description: 'Allow building against development snapshots of FreeRDP'
+)
+
+# SSH-specific options
+# NOTE: SSH agent support is currently broken - see https://issues.apache.org/jira/browse/GUACAMOLE-1658
+option(
+  'ssh_agent', type: 'feature', value: 'disabled',
+  description: 'Enable built-in SSH agent forwarding support'
+)
+
+# Build targets
+option(
+  'guacd', type: 'feature', value: 'enabled',
+  description: 'Build the Guacamole proxy daemon (guacd)'
+)
+option(
+  'guacenc', type: 'feature', value: 'enabled',
+  description: 'Build the Guacamole video encoding tool (guacenc)'
+)
+option(
+  'guaclog', type: 'feature', value: 'enabled',
+  description: 'Build the Guacamole input logging tool (guaclog)'
+)
+
+# Installation paths
+option(
+  'init_dir', type: 'string',
+  description: 'Directory where init scripts will be installed'
+)
+option(
+  'systemd_dir', type: 'string',
+  description: 'Directory where systemd unit files will be installed'
+)
+option(
+  'systemd_user', type: 'string', value: 'daemon',
+  description: 'User account for running guacd in systemd unit files'
+)
+option(
+  'guacd_conf', type: 'string', value: '/etc/guacamole/guacd.conf',
+  description: 'Full path to the guacd configuration file'
+)
