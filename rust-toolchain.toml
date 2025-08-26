@@ -1,0 +1,3 @@
+[toolchain]
+channel = "nightly-2025-08-08"  # 1.91.0-nightly (2fd855fbf 2025-08-07)
+profile = "default"

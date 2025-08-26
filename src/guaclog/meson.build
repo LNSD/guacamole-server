@@ -28,44 +28,44 @@ guaclog_config.merge_from(config)
 
 ## libguac
 if not is_variable('libguac_dep')
-    error('libguac_dep not found. Please build libguac first.')
+  error('libguac_dep not found. Please build libguac first.')
 endif
 
 # ----------------------------------------------------------------
 # Executable
 # ----------------------------------------------------------------
 guaclog_config_h = configure_file(
-    output: 'config.h',
-    configuration: guaclog_config,
+  output: 'config.h',
+  configuration: guaclog_config,
 )
 
 guaclog_deps = [libguac_dep]
 
 guaclog_src = [
-    'guaclog.c',
-    'instructions.c',
-    'instruction-key.c',
-    'interpret.c',
-    'keydef.c',
-    'log.c',
-    'state.c',
+  'guaclog.c',
+  'instructions.c',
+  'instruction-key.c',
+  'interpret.c',
+  'keydef.c',
+  'log.c',
+  'state.c',
 ]
 
 guaclog = executable(
-    'guaclog',
-    guaclog_src + [guaclog_config_h],
-    dependencies: guaclog_deps,
-    c_args: ['-Werror', '-Wall', '-pedantic'],
-    install: true,
+  'guaclog',
+  guaclog_src + [guaclog_config_h],
+  dependencies: guaclog_deps,
+  c_args: ['-Werror', '-Wall', '-pedantic'],
+  install: true,
 )
 
 # ----------------------------------------------------------------
 # Man pages
 # ----------------------------------------------------------------
 guaclog_man1 = configure_file(
-    input: 'man/guaclog.1.in',
-    output: 'guaclog.1',
-    configuration: guaclog_config,
+  input: 'man/guaclog.1.in',
+  output: 'guaclog.1',
+  configuration: guaclog_config,
 )
 
 install_man([guaclog_man1])

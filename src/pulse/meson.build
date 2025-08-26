@@ -30,16 +30,16 @@ pulse_config.merge_from(config)
 libpulse_dep = dependency('libpulse', required: get_option('pulse'))
 
 if libpulse_dep.found()
-    pulse_config.set(
-        'ENABLE_PULSE',
-        '/**/',
-        description: 'Whether PulseAudio support is enabled',
-    )
+  pulse_config.set(
+    'ENABLE_PULSE',
+    '/**/',
+    description: 'Whether PulseAudio support is enabled',
+  )
 endif
 
 ## libguac
 if not is_variable('libguac_dep')
-    error('libguac_dep not found. Please build libguac first.')
+  error('libguac_dep not found. Please build libguac first.')
 endif
 
 # ----------------------------------------------------------------
@@ -54,14 +54,14 @@ pulse_inc = include_directories('.')
 pulse_src = ['pulse.c']
 
 pulse_lib = static_library(
-    'guac_pulse',
-    pulse_src + [pulse_config_h],
-    dependencies: pulse_deps,
-    c_args: ['-Werror', '-Wall', '-pedantic'],
-    link_args: ['-Wl,--no-undefined'],
+  'guac_pulse',
+  pulse_src + [pulse_config_h],
+  dependencies: pulse_deps,
+  c_args: ['-Werror', '-Wall', '-pedantic'],
+  link_args: ['-Wl,--no-undefined'],
 )
 
 pulse_dep = declare_dependency(
-    include_directories: pulse_inc,
-    link_with: pulse_lib,
+  include_directories: pulse_inc,
+  link_with: pulse_lib,
 )

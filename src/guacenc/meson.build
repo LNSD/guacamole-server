@@ -42,15 +42,15 @@ libswscale_dep = dependency('libswscale', required: true)
 cairo_dep = dependency('cairo', required: true)
 
 if cc.has_function(
-    'cairo_format_stride_for_width',
-    prefix: '#include <cairo/cairo.h>',
-    dependencies: cairo_dep,
+  'cairo_format_stride_for_width',
+  prefix: '#include <cairo/cairo.h>',
+  dependencies: cairo_dep,
 )
-    guacenc_config.set(
-        'HAVE_CAIRO_FORMAT_STRIDE_FOR_WIDTH',
-        '/**/',
-        description: 'Whether cairo_format_stride_for_width() is defined',
-    )
+  guacenc_config.set(
+    'HAVE_CAIRO_FORMAT_STRIDE_FOR_WIDTH',
+    '/**/',
+    description: 'Whether cairo_format_stride_for_width() is defined',
+  )
 endif
 
 ## libjpeg
@@ -60,124 +60,124 @@ libjpeg_dep = dependency('libjpeg', 'jpeg', required: true)
 libpng_dep = dependency('libpng', 'png', required: true)
 
 if cc.check_header('pngstruct.h', dependencies: libpng_dep)
-    guacenc_config.set(
-        'HAVE_PNGSTRUCT_H',
-        '/**/',
-        description: 'The <pngstruct.h> header file is available',
-    )
+  guacenc_config.set(
+    'HAVE_PNGSTRUCT_H',
+    '/**/',
+    description: 'The <pngstruct.h> header file is available',
+  )
 endif
 
 if cc.has_function(
-    'png_get_io_ptr',
-    prefix: '#include <png.h>',
-    dependencies: libpng_dep,
+  'png_get_io_ptr',
+  prefix: '#include <png.h>',
+  dependencies: libpng_dep,
 )
-    guacenc_config.set(
-        'HAVE_PNG_GET_IO_PTR',
-        '/**/',
-        description: 'The `png_get_io_ptr` function is defined',
-    )
+  guacenc_config.set(
+    'HAVE_PNG_GET_IO_PTR',
+    '/**/',
+    description: 'The `png_get_io_ptr` function is defined',
+  )
 endif
 
 ## libwebp (optional)
 libwebp_dep = dependency('libwebp', required: get_option('webp'))
 
 libwebp_has_decode_header = cc.has_header(
-    'webp/decode.h',
-    dependencies: libwebp_dep,
-    required: get_option('webp'),
+  'webp/decode.h',
+  dependencies: libwebp_dep,
+  required: get_option('webp'),
 )
 
 if libwebp_dep.found() and libwebp_has_decode_header
-    guacenc_config.set(
-        'ENABLE_WEBP',
-        '/**/',
-        description: 'Whether WebP support is enabled',
-    )
+  guacenc_config.set(
+    'ENABLE_WEBP',
+    '/**/',
+    description: 'Whether WebP support is enabled',
+  )
 endif
 
 ## libguac
 if not is_variable('libguac_dep')
-    error('libguac_dep not found. Please build libguac first.')
+  error('libguac_dep not found. Please build libguac first.')
 endif
 
 # ----------------------------------------------------------------
 # Executable
 # ----------------------------------------------------------------
 guacenc_config_h = configure_file(
-    output: 'config.h',
-    configuration: guacenc_config,
+  output: 'config.h',
+  configuration: guacenc_config,
 )
 
 guacenc_deps = [
-    libavcodec_dep,
-    libavformat_dep,
-    libavutil_dep,
-    cairo_dep,
-    libjpeg_dep,
-    libpng_dep,
-    libswscale_dep,
-    libwebp_dep,
-    libguac_dep,
+  libavcodec_dep,
+  libavformat_dep,
+  libavutil_dep,
+  cairo_dep,
+  libjpeg_dep,
+  libpng_dep,
+  libswscale_dep,
+  libwebp_dep,
+  libguac_dep,
 ]
 
 guacenc_src = [
-    'buffer.c',
-    'cursor.c',
-    'display.c',
-    'display-buffers.c',
-    'display-image-streams.c',
-    'display-flatten.c',
-    'display-layers.c',
-    'display-sync.c',
-    'encode.c',
-    'ffmpeg-compat.c',
-    'guacenc.c',
-    'image-stream.c',
-    'instructions.c',
-    'instruction-blob.c',
-    'instruction-cfill.c',
-    'instruction-copy.c',
-    'instruction-cursor.c',
-    'instruction-dispose.c',
-    'instruction-end.c',
-    'instruction-img.c',
-    'instruction-mouse.c',
-    'instruction-move.c',
-    'instruction-rect.c',
-    'instruction-shade.c',
-    'instruction-size.c',
-    'instruction-sync.c',
-    'instruction-transfer.c',
-    'jpeg.c',
-    'layer.c',
-    'log.c',
-    'parse.c',
-    'png.c',
-    'video.c',
+  'buffer.c',
+  'cursor.c',
+  'display.c',
+  'display-buffers.c',
+  'display-image-streams.c',
+  'display-flatten.c',
+  'display-layers.c',
+  'display-sync.c',
+  'encode.c',
+  'ffmpeg-compat.c',
+  'guacenc.c',
+  'image-stream.c',
+  'instructions.c',
+  'instruction-blob.c',
+  'instruction-cfill.c',
+  'instruction-copy.c',
+  'instruction-cursor.c',
+  'instruction-dispose.c',
+  'instruction-end.c',
+  'instruction-img.c',
+  'instruction-mouse.c',
+  'instruction-move.c',
+  'instruction-rect.c',
+  'instruction-shade.c',
+  'instruction-size.c',
+  'instruction-sync.c',
+  'instruction-transfer.c',
+  'jpeg.c',
+  'layer.c',
+  'log.c',
+  'parse.c',
+  'png.c',
+  'video.c',
 ]
 
 # Compile WebP support if available
 if libwebp_dep.found() and libwebp_has_decode_header
-    guacenc_src += ['webp.c']
+  guacenc_src += ['webp.c']
 endif
 
 
 guacenc = executable(
-    'guacenc',
-    guacenc_src + [guacenc_config_h],
-    dependencies: guacenc_deps,
-    c_args: ['-Werror', '-Wall', '-pedantic'],
-    install: true,
+  'guacenc',
+  guacenc_src + [guacenc_config_h],
+  dependencies: guacenc_deps,
+  c_args: ['-Werror', '-Wall', '-pedantic'],
+  install: true,
 )
 
 # ----------------------------------------------------------------
 # Man pages
 # ----------------------------------------------------------------
 guacenc_man1 = configure_file(
-    input: 'man/guacenc.1.in',
-    output: 'guacenc.1',
-    configuration: guacenc_config,
+  input: 'man/guacenc.1.in',
+  output: 'guacenc.1',
+  configuration: guacenc_config,
 )
 
 install_man([guacenc_man1])

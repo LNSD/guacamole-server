@@ -18,12 +18,12 @@
 #
 
 project(
-    'guacamole-server',
-    'c',
-    version: '1.6.0',
-    meson_version: '>=1.1',
-    license: 'Apache-2.0',
-    default_options: ['c_std=c99'],
+  'guacamole-server',
+  'c',
+  version: '1.6.0',
+  meson_version: '>=1.1',
+  license: 'Apache-2.0',
+  default_options: ['c_std=c99'],
 )
 
 # Source characteristics
@@ -36,84 +36,89 @@ add_project_arguments('-D__BSD_VISIBLE=1', language: 'c')
 # ----------------------------------------------------------------
 config = configuration_data()
 config.set_quoted(
-    'VERSION',
-    meson.project_version(),
-    description: 'Version number of package',
+  'VERSION',
+  meson.project_version(),
+  description: 'Version number of package',
 )
 
 # Package metadata
 config.set_quoted('PACKAGE', 'guacamole-server', description: 'Name of package')
 config.set_quoted(
-    'PACKAGE_NAME',
-    'guacamole-server',
-    description: 'Define to the full name of this package.',
+  'PACKAGE_NAME',
+  'guacamole-server',
+  description: 'Define to the full name of this package.',
 )
 config.set_quoted(
-    'PACKAGE_STRING',
-    'guacamole-server ' + meson.project_version(),
-    description: 'Define to the full name and version of this package.',
+  'PACKAGE_STRING',
+  'guacamole-server ' + meson.project_version(),
+  description: 'Define to the full name and version of this package.',
 )
 config.set_quoted(
-    'PACKAGE_TARNAME',
-    'guacamole-server',
-    description: 'Define to the one symbol short name of this package.',
+  'PACKAGE_TARNAME',
+  'guacamole-server',
+  description: 'Define to the one symbol short name of this package.',
 )
 config.set_quoted(
-    'PACKAGE_URL',
-    '',
-    description: 'Define to the home page for this package.',
+  'PACKAGE_URL',
+  '',
+  description: 'Define to the home page for this package.',
 )
 config.set_quoted(
-    'PACKAGE_VERSION',
-    meson.project_version(),
-    description: 'Define to the version of this package.',
+  'PACKAGE_VERSION',
+  meson.project_version(),
+  description: 'Define to the version of this package.',
 )
 config.set_quoted(
-    'PACKAGE_BUGREPORT',
-    '',
-    description: 'Define to the address where bug reports for this package should be sent.',
+  'PACKAGE_BUGREPORT',
+  '',
+  description: 'Define to the address where bug reports for this package should be sent.',
 )
 
 # Guacd config file
 guac_conf_file = get_option('guacd_conf')
 if guac_conf_file == ''
-    error('A valid guacd config file path must be specified')
+  error('A valid guacd config file path must be specified')
 endif
 
 config.set_quoted(
-    'GUACD_CONF_FILE',
-    guac_conf_file,
-    description: 'The full path to the guacd config file',
+  'GUACD_CONF_FILE',
+  guac_conf_file,
+  description: 'The full path to the guacd config file',
 )
 
 # ----------------------------------------------------------------
 # Project modules
 # ----------------------------------------------------------------
 
+# libguac-core (exmperimental Rust core library)
+if get_option('rust').enabled()
+  subdir('src/core')
+endif
+
 # libguac
 subdir('src/libguac')
 
 # common (built when guacd or any protocol is enabled)
 if get_option('guacd').enabled() or get_option('kubernetes').enabled() or \
-    get_option('rdp').enabled() or get_option('ssh').enabled() or \
-    get_option('telnet').enabled() or get_option('vnc').enabled()
-    subdir('src/common')
+  get_option('rdp').enabled() or get_option('ssh').enabled() or \
+  get_option('telnet').enabled() or get_option('vnc').enabled()
+  subdir('src/common')
 endif
 
 # common-ssh (built when SSH is enabled, used by SSH, RDP, and VNC protocols)
 if get_option('ssh').enabled()
-    subdir('src/common-ssh')
+  subdir('src/common-ssh')
 endif
 
 # terminal emulator (built when needed by SSH, Telnet, Kubernetes, etc.)
 if get_option('kubernetes').enabled() or get_option('ssh').enabled() or \
-    get_option('telnet').enabled()
-    subdir('src/terminal')
+  get_option('telnet').enabled()
+  subdir('src/terminal')
 endif
 
 # pulse
 if get_option('pulse').enabled()
-    subdir('src/pulse')
+  subdir('src/pulse')
 endif
 
 
@@ -121,27 +126,27 @@ endif
 
 # protocols/kubernetes
 if get_option('kubernetes').enabled()
-    subdir('src/protocols/kubernetes')
+  subdir('src/protocols/kubernetes')
 endif
 
 # protocols/rdp
 if get_option('rdp').enabled()
-    subdir('src/protocols/rdp')
+  subdir('src/protocols/rdp')
 endif
 
 # protocols/ssh
 if get_option('ssh').enabled()
-    subdir('src/protocols/ssh')
+  subdir('src/protocols/ssh')
 endif
 
 # protocols/telnet
 if get_option('telnet').enabled()
-    subdir('src/protocols/telnet')
+  subdir('src/protocols/telnet')
 endif
 
 # protocols/vnc
 if get_option('vnc').enabled()
-    subdir('src/protocols/vnc')
+  subdir('src/protocols/vnc')
 endif
 
 
@@ -149,16 +154,16 @@ endif
 
 # guacd
 if get_option('guacd').enabled()
-    subdir('src/guacd')
+  subdir('src/guacd')
 endif
 
 # guacenc
 if get_option('guacenc').enabled()
-    subdir('src/guacenc')
+  subdir('src/guacenc')
 endif
 
 # guaclog
 if get_option('guaclog').enabled()
-    subdir('src/guaclog')
+  subdir('src/guaclog')
 endif
 

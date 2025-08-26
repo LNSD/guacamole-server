@@ -1,0 +1,14 @@
+# This file configures Cargo's behavior for this project.
+
+[build]
+# Override the default target directory for build artifacts.
+# This places all compiled files in `buildDir/cargo-target` instead of the default `target/`.
+target-dir = "buildDir/cargo-target"
+
+[unstable]
+# This section enables unstable Cargo features.
+
+# The `unstable-options` flag is required to use other unstable options,
+# like `build-std`. It also allows passing unstable options to rustc.
+# See: https://doc.rust-lang.org/cargo/commands/cargo-build.html#output-options
+unstable-options = true

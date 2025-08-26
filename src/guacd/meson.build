@@ -44,32 +44,32 @@ pthread_setattr_default_np_check = '''
 '''
 
 if cc.links(
-    pthread_setattr_default_np_check,
-    dependencies: thread_dep,
-    name: 'pthread_setattr_default_np check',
+  pthread_setattr_default_np_check,
+  dependencies: thread_dep,
+  name: 'pthread_setattr_default_np check',
 )
-    guacd_config.set(
-        'HAVE_DECL_PTHREAD_SETATTR_DEFAULT_NP',
-        1,
-        description: 'Define to 1 if you have the declaration of `pthread_setattr_default_np`, and to 0 if you don\'t.',
-    )
+  guacd_config.set(
+    'HAVE_DECL_PTHREAD_SETATTR_DEFAULT_NP',
+    1,
+    description: 'Define to 1 if you have the declaration of `pthread_setattr_default_np`, and to 0 if you don\'t.',
+  )
 endif
 
 ## libssl
 libssl_dep = dependency('openssl', required: get_option('ssl'))
 
 if libssl_dep.found() and cc.has_header(
-    'openssl/ssl.h',
-    dependencies: libssl_dep,
+  'openssl/ssl.h',
+  dependencies: libssl_dep,
 )
-    guacd_config.set(
-        'ENABLE_SSL',
-        '/**/',
-        description: 'Whether SSL-related support is enabled',
-    )
+  guacd_config.set(
+    'ENABLE_SSL',
+    '/**/',
+    description: 'Whether SSL-related support is enabled',
+  )
 
-    # OpenSSL 1.1 does away with explicit threading callbacks
-    openssl_threading_check = '''
+  # OpenSSL 1.1 does away with explicit threading callbacks
+  openssl_threading_check = '''
         #include <openssl/opensslv.h>
         
         #if OPENSSL_VERSION_NUMBER < 0x10100000L
@@ -81,28 +81,28 @@ if libssl_dep.found() and cc.has_header(
         }
     '''
 
-    if not cc.compiles(
-        openssl_threading_check,
-        dependencies: libssl_dep,
-        name: 'OpenSSL threading callbacks check',
+  if not cc.compiles(
+    openssl_threading_check,
+    dependencies: libssl_dep,
+    name: 'OpenSSL threading callbacks check',
+  )
+    # OpenSSL < 1.1 requires explicit threading callbacks
+    guacd_config.set(
+      'OPENSSL_REQUIRES_THREADING_CALLBACKS',
+      '/**/',
+      description: 'Whether OpenSSL requires explicit threading callbacks for threadsafety',
     )
-        # OpenSSL < 1.1 requires explicit threading callbacks
-        guacd_config.set(
-            'OPENSSL_REQUIRES_THREADING_CALLBACKS',
-            '/**/',
-            description: 'Whether OpenSSL requires explicit threading callbacks for threadsafety',
-        )
-    endif
+  endif
 endif
 
 ## libguac
 if not is_variable('libguac_dep')
-    error('libguac_dep not found. Please build libguac first.')
+  error('libguac_dep not found. Please build libguac first.')
 endif
 
 ## libguac_common
 if not is_variable('common_dep')
-    error('common_dep not found. Please build libguac_common first.')
+  error('common_dep not found. Please build libguac_common first.')
 endif
 
 # ----------------------------------------------------------------
@@ -111,41 +111,41 @@ endif
 guacd_config_h = configure_file(output: 'config.h', configuration: guacd_config)
 
 guacd_src = [
-    'conf-args.c',
-    'conf-file.c',
-    'conf-parse.c',
-    'connection.c',
-    'daemon.c',
-    'log.c',
-    'move-fd.c',
-    'proc.c',
-    'proc-map.c',
+  'conf-args.c',
+  'conf-file.c',
+  'conf-parse.c',
+  'connection.c',
+  'daemon.c',
+  'log.c',
+  'move-fd.c',
+  'proc.c',
+  'proc-map.c',
 ]
 
 guacd_deps = [thread_dep, libssl_dep, common_dep, libguac_dep]
 
 guacd = executable(
-    'guacd',
-    guacd_src + [guacd_config_h],
-    dependencies: guacd_deps,
-    c_args: ['-Werror', '-Wall', '-pedantic'],
-    install: true,
-    install_dir: get_option('sbindir'),
+  'guacd',
+  guacd_src + [guacd_config_h],
+  dependencies: guacd_deps,
+  c_args: ['-Werror', '-Wall', '-pedantic'],
+  install: true,
+  install_dir: get_option('sbindir'),
 )
 
 # ----------------------------------------------------------------
 # Man pages
 # ----------------------------------------------------------------
 guacd_man8 = configure_file(
-    input: 'man/guacd.8.in',
-    output: 'guacd.8',
-    configuration: guacd_config,
+  input: 'man/guacd.8.in',
+  output: 'guacd.8',
+  configuration: guacd_config,
 )
 
 guacd_conf_man5 = configure_file(
-    input: 'man/guacd.conf.5.in',
-    output: 'guacd.conf.5',
-    configuration: guacd_config,
+  input: 'man/guacd.conf.5.in',
+  output: 'guacd.conf.5',
+  configuration: guacd_config,
 )
 
 install_man([guacd_man8, guacd_conf_man5])
@@ -161,35 +161,33 @@ systemd_user = get_option('systemd_user')
 
 # Init script generation and installation (equivalent to autotools ENABLE_INIT)
 if init_dir != ''
-    # Generate init script by substituting @sbindir@ with actual sbindir
-    guacd_init_script = configure_file(
-        input: 'init.d/guacd.in',
-        output: 'init.d-guacd',
-        configuration: {
-            'sbindir': get_option('prefix') / get_option('sbindir')
-        },
-    )
-    
-    # Install the generated init script with correct name and permissions
-    install_data(
-        guacd_init_script,
-        install_dir: init_dir,
-        rename: 'guacd',
-        install_mode: 'rwxr-xr-x',  # chmod +x equivalent
-    )
+  # Generate init script by substituting @sbindir@ with actual sbindir
+  guacd_init_script = configure_file(
+    input: 'init.d/guacd.in',
+    output: 'init.d-guacd',
+    configuration: {'sbindir': get_option('prefix') / get_option('sbindir')},
+  )
+
+  # Install the generated init script with correct name and permissions
+  install_data(
+    guacd_init_script,
+    install_dir: init_dir,
+    rename: 'guacd',
+    install_mode: 'rwxr-xr-x',  # chmod +x equivalent
+  )
 endif
 
-# Systemd service generation and installation (equivalent to autotools ENABLE_SYSTEMD)  
+# Systemd service generation and installation (equivalent to autotools ENABLE_SYSTEMD)
 if systemd_dir != ''
-    # Generate systemd service by substituting @sbindir@ and @systemduser@
-    guacd_systemd_service = configure_file(
-        input: 'systemd/guacd.service.in',
-        output: 'guacd.service',
-        configuration: {
-            'sbindir': get_option('prefix') / get_option('sbindir'),
-            'systemduser': systemd_user
-        },
-        install: true,
-        install_dir: systemd_dir,
-    )
+  # Generate systemd service by substituting @sbindir@ and @systemduser@
+  guacd_systemd_service = configure_file(
+    input: 'systemd/guacd.service.in',
+    output: 'guacd.service',
+    configuration: {
+      'sbindir': get_option('prefix') / get_option('sbindir'),
+      'systemduser': systemd_user,
+    },
+    install: true,
+    install_dir: systemd_dir,
+  )
 endif

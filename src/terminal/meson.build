@@ -43,64 +43,64 @@ thread_dep = dependency('threads', required: true)
 
 ## libguac
 if not is_variable('libguac_dep')
-    error('libguac_dep not found. Please build libguac first.')
+  error('libguac_dep not found. Please build libguac first.')
 endif
 
 ## libguac_common
 if not is_variable('common_dep')
-    error('common_dep not found. Please build libguac_common first.')
+  error('common_dep not found. Please build libguac_common first.')
 endif
 
 # ----------------------------------------------------------------
 # Shared Library
 # ----------------------------------------------------------------
 terminal_config_h = configure_file(
-    output: 'config.h',
-    configuration: terminal_config,
+  output: 'config.h',
+  configuration: terminal_config,
 )
 
 terminal_deps = [
-    cairo_dep,
-    libm_dep,
-    pango_dep,
-    pangocairo_dep,
-    thread_dep,
-    common_dep,
-    libguac_dep,
+  cairo_dep,
+  libm_dep,
+  pango_dep,
+  pangocairo_dep,
+  thread_dep,
+  common_dep,
+  libguac_dep,
 ]
 
 terminal_inc = include_directories('.')
 
 terminal_src = [
-    'buffer.c',
-    'char-mappings.c',
-    'color-scheme.c',
-    'common.c',
-    'display.c',
-    'named-colors.c',
-    'palette.c',
-    'scrollbar.c',
-    'select.c',
-    'selection-point.c',
-    'terminal.c',
-    'terminal-handlers.c',
-    'terminal-stdin-stream.c',
-    'typescript.c',
-    'xparsecolor.c',
+  'buffer.c',
+  'char-mappings.c',
+  'color-scheme.c',
+  'common.c',
+  'display.c',
+  'named-colors.c',
+  'palette.c',
+  'scrollbar.c',
+  'select.c',
+  'selection-point.c',
+  'terminal.c',
+  'terminal-handlers.c',
+  'terminal-stdin-stream.c',
+  'typescript.c',
+  'xparsecolor.c',
 ]
 
 terminal_lib = shared_library(
-    'guac_terminal',
-    terminal_src + [terminal_config_h],
-    dependencies: terminal_deps,
-    c_args: ['-Werror', '-Wall', '-pedantic'],
-    link_args: ['-Wl,--no-undefined'],
-    install: true,
+  'guac_terminal',
+  terminal_src + [terminal_config_h],
+  dependencies: terminal_deps,
+  c_args: ['-Werror', '-Wall', '-pedantic'],
+  link_args: ['-Wl,--no-undefined'],
+  install: true,
 )
 
 terminal_dep = declare_dependency(
-    include_directories: terminal_inc,
-    link_with: terminal_lib,
+  include_directories: terminal_inc,
+  link_with: terminal_lib,
 )
 
 # Public headers
@@ -114,44 +114,44 @@ install_headers(['terminal/terminal.h'], subdir: 'libguac/terminal')
 cunit_dep = dependency('cunit', required: true)
 
 test_terminal_src = [
-    'tests/selection-point/enclose-text.c',
-    'tests/selection-point/point-after.c',
-    'tests/selection-point/rounding.c',
+  'tests/selection-point/enclose-text.c',
+  'tests/selection-point/point-after.c',
+  'tests/selection-point/rounding.c',
 ]
 
 test_terminal_inc = include_directories('tests')
 
 # Generate test runner using the `generate-test-runner.pl` script
 test_terminal_runner = custom_target(
-    'test_terminal_runner',
-    input: test_terminal_src,
-    output: '_generated_runner.c',
-    command: [
-        meson.project_source_root() / 'util/generate-test-runner.pl',
-        '@INPUT@',
-    ],
-    capture: true,
+  'test_terminal_runner',
+  input: test_terminal_src,
+  output: '_generated_runner.c',
+  command: [
+    meson.project_source_root() / 'util/generate-test-runner.pl',
+    '@INPUT@',
+  ],
+  capture: true,
 )
 
 test_terminal_runner_exe = executable(
-    'test_terminal',
-    [test_terminal_runner] + test_terminal_src,
-    include_directories: test_terminal_inc,
-    dependencies: [cunit_dep, terminal_dep],
-    c_args: ['-Werror', '-Wall', '-pedantic'],
+  'test_terminal',
+  [test_terminal_runner] + test_terminal_src,
+  include_directories: test_terminal_inc,
+  dependencies: [cunit_dep, terminal_dep],
+  c_args: ['-Werror', '-Wall', '-pedantic'],
 )
 
 
 test(
-    'test_terminal',
-    test_terminal_runner_exe,
-    protocol: 'tap',
-    env: environment(
-        {
-            # By default, MALLOC_PERTURB_ is set to a random value between 1..255. This helps find
-            # memory leaks on configurations using glibc. Disable this behavior for tests.
-            # See: https://mesonbuild.com/Unit-tests.html#malloc_perturb_
-            'MALLOC_PERTURB_': '0',
-        },
-    ),
+  'test_terminal',
+  test_terminal_runner_exe,
+  protocol: 'tap',
+  env: environment(
+    {
+      # By default, MALLOC_PERTURB_ is set to a random value between 1..255. This helps find
+      # memory leaks on configurations using glibc. Disable this behavior for tests.
+      # See: https://mesonbuild.com/Unit-tests.html#malloc_perturb_
+      'MALLOC_PERTURB_': '0',
+    },
+  ),
 )

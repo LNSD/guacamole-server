@@ -1,0 +1,16 @@
+[package]
+name = "guac-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "guac_core"
+crate-type = ["rlib", "staticlib"]
+
+[features]
+# Enable the FFI bindings
+ffi = []
+
+[dependencies]
+
